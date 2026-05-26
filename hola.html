@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Carta de Amor 💕</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body { min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 1rem; position: relative; overflow: hidden; font-family: serif; }
+    #bg { position: fixed; inset: 0; background: linear-gradient(135deg, #ffe4e6 0%, #fdf2f8 50%, #fee2e2 100%); z-index: 0; overflow: hidden; }
+    .falling { position: absolute; top: -10%; opacity: 0.7; animation-timing-function: linear; animation-iteration-count: infinite; }
+    @keyframes fall { 0% { transform: translateY(0) rotate(0deg); opacity: 1; } 100% { transform: translateY(110vh) rotate(360deg); opacity: 0; } }
+    @keyframes fall-rose { 0% { transform: translateY(0) rotate(0deg); opacity: 0.7; } 100% { transform: translateY(110vh) rotate(-360deg); opacity: 0; } }
+    .sparkle { position: fixed; width: 8px; height: 8px; background: #fde047; border-radius: 50%; pointer-events: none; opacity: 0; animation: sparkle 2s ease-in-out infinite; }
+    @keyframes sparkle { 0%, 100% { opacity: 0; transform: scale(0); } 50% { opacity: 1; transform: scale(1); } }
+    #main { position: relative; z-index: 10; }
+    #envelope { background: linear-gradient(135deg, #fb7185, #f472b6, #f87171); width: 320px; height: 256px; border-radius: 12px; box-shadow: 0 25px 50px rgba(0,0,0,0.25); display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 1.5rem; position: relative; cursor: pointer; transition: transform 0.2s, opacity 0.7s; }
+    #envelope:hover { transform: scale(1.05); }
+    .env-corner { position: absolute; font-size: 1.875rem; opacity: 0.3; }
+    .env-corner.tl { top: 1rem; left: 1rem; animation: bounce 1s infinite; }
+    .env-corner.tr { top: 1rem; right: 1rem; animation: bounce 1s infinite; animation-delay: 0.5s; }
+    .env-corner.bl { bottom: 1rem; left: 1rem; animation: bounce 1s infinite; animation-delay: 1s; }
+    .env-corner.br { bottom: 1rem; right: 1rem; animation: bounce 1s infinite; animation-delay: 1.5s; }
+    @keyframes bounce { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-8px); } }
+    #env-center { text-align: center; position: relative; z-index: 10; }
+    #env-center .big { font-size: 2rem; animation: pulse 1.5s infinite; }
+    #env-center .label { color: #fff; font-size: 1.2rem; font-weight: 500; font-family: sans-serif; margin-top: 0.5rem; }
+    #env-center .sub { color: rgba(255,255,255,0.8); font-size: 0.85rem; margin-top: 0.3rem; font-family: sans-serif; }
+    @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
+    #seal { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 80px; height: 80px; background: #ef4444; border-radius: 50%; display: flex; align-items: center; justify-content: center; box-shadow: 0 10px 20px rgba(0,0,0,0.3); animation: ping 1.5s cubic-bezier(0,0,0.2,1) infinite; font-size: 1.8rem; }
+    @keyframes ping { 75%, 100% { transform: translate(-50%,-50%) scale(1.15); opacity: 0.7; } 0% { transform: translate(-50%,-50%) scale(1); opacity: 1; } }
+    #letter { background: #fff; border-radius: 16px; box-shadow: 0 25px 50px rgba(0,0,0,0.2); overflow: hidden; max-width: 28rem; width: 100%; display: none; opacity: 0; transform: translateY(32px) scale(0.9); transition: opacity 0.7s, transform 0.7s; }
+    #letter.visible { display: block; opacity: 1; transform: translateY(0) scale(1); }
+    .letter-header { background: linear-gradient(90deg, #f43f5e, #ec4899, #ef4444); padding: 1.5rem; text-align: center; position: relative; overflow: hidden; }
+    .letter-header .hcorner { position: absolute; font-size: 1.5rem; opacity: 0.2; }
+    .letter-header .hcorner.a { left: 1rem; top: 0.5rem; animation: spin-slow 8s linear infinite; }
+    .letter-header .hcorner.b { right: 1rem; top: 0.5rem; animation: spin-slow 8s linear infinite; }
+    .letter-header .hcorner.c { left: 2rem; bottom: 0.5rem; animation: pulse 1.5s infinite; }
+    .letter-header .hcorner.d { right: 2rem; bottom: 0.5rem; animation: pulse 1.5s infinite; }
+    @keyframes spin-slow { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+    .letter-header h1 { font-size: 1.4rem; color: #fff; position: relative; z-index: 10; font-family: serif; }
+    .letter-body { padding: 2rem; color: #374151; text-align: center; line-height: 1.7; }
+    .letter-body p { margin-bottom: 1rem; font-size: 1rem; }
+    .letter-body .greeting { font-size: 1.1rem; font-weight: bold; }
+    .letter-footer-text { margin-top: 1.5rem; padding-top: 1rem; border-top: 1px solid #fce7f3; }
+    .letter-footer-text .from { color: #e11d48; font-weight: 600; font-size: 1.2rem; }
+    .letter-footer-text .sub2 { color: #ec4899; font-size: 1.1rem; margin-top: 0.5rem; animation: pulse 1.5s infinite; }
+    .letter-footer { background: linear-gradient(90deg, #ffe4e6, #fce7f3); padding: 1rem; text-align: center; }
+    .letter-footer span { font-size: 1.5rem; margin: 0 4px; display: inline-block; animation: bounce 1s infinite; }
+    #music-btn { position: fixed; bottom: 1rem; right: 1rem; background: #f43f5e; color: #fff; border: none; width: 52px; height: 52px; border-radius: 50%; font-size: 1.4rem; cursor: pointer; box-shadow: 0 6px 16px rgba(0,0,0,0.25); z-index: 50; transition: background 0.2s; display: flex; align-items: center; justify-content: center; }
+    #music-btn:hover { background: #e11d48; }
+    @media (min-width: 768px) { #envelope { width: 384px; height: 288px; } .letter-header h1 { font-size: 1.7rem; } .letter-body { padding: 2.5rem; } }
+  </style>
+</head>
+<body>
+<div id="bg"></div>
+<div id="sparkles"></div>
+<audio id="audio" src="Mon Laferte - Amárrame (Video Oficial) ft. Juanes.mp3" loop preload="auto"></audio>
+<div id="main">
+  <div id="envelope" onclick="openLetter()">
+    <span class="env-corner tl">💕</span>
+    <span class="env-corner tr">🌹</span>
+    <span class="env-corner bl">🌹</span>
+    <span class="env-corner br">💕</span>
+    <div id="env-center">
+      <p class="big">💌</p>
+      <p class="label">Toca para abrir</p>
+      <p class="sub">Carta de amor para ti ❤️</p>
+    </div>
+    <div id="seal">❤️</div>
+  </div>
+  <div id="letter">
+    <div class="letter-header">
+      <span class="hcorner a">💕</span>
+      <span class="hcorner b">💗</span>
+      <span class="hcorner c">🌹</span>
+      <span class="hcorner d">🌹</span>
+      <h1>💕 2 Meses de Amarnos 💕</h1>
+    </div>
+    <div class="letter-body">
+      <p class="greeting"><strong>Mi niña hermosa,</strong></p>
+      <p>Estos dos meses juntos han sido los mejores de mi vida. <strong>Cada día estoy más enamorado de ti, amor.</strong></p>
+      <p>Gracias por siempre cuidarme y estar para mí. Ya quiero poder estar cerca contigo amorcito.</p>
+      <p><strong>Te amo, mi bebé hermosa</strong> 💕</p>
+      <div class="letter-footer-text">
+        <p class="from">Con todo mi amor, 💌<br/><span style="font-size:1rem">Tu bebé ❤️</span></p>
+        <p class="sub2">Quiele estar contigo siempre amorcito 😘</p>
+      </div>
+    </div>
+    <div class="letter-footer">
+      <span style="animation-delay:0s">💕</span>
+      <span style="animation-delay:0.2s">💗</span>
+      <span style="animation-delay:0.4s">💖</span>
+      <span style="animation-delay:0.6s">💘</span>
+      <span style="animation-delay:0.8s">❤️</span>
+    </div>
+  </div>
+</div>
+<button id="music-btn" onclick="toggleMusic()" title="Reproducir/Pausar música">🔊</button>
+<script>
+  const heartEmojis = ['💕','💗','💖','❤️','💘','💞'];
+  const bg = document.getElementById('bg');
+  for (let i = 0; i < 30; i++) {
+    const el = document.createElement('div');
+    el.className = 'falling';
+    const left = Math.random() * 100;
+    const delay = Math.random() * 2;
+    const size = Math.random() * 20 + 15;
+    const dur = 3 + Math.random() * 2;
+    const emoji = heartEmojis[Math.floor(Math.random() * heartEmojis.length)];
+    el.textContent = emoji;
+    el.style.cssText = `left:${left}%;font-size:${size}px;animation:fall ${dur}s linear infinite;animation-delay:${delay}s;`;
+    bg.appendChild(el);
+  }
+  for (let i = 0; i < 10; i++) {
+    const el = document.createElement('div');
+    el.className = 'falling';
+    const left = Math.random() * 100;
+    const delay = Math.random() * 3;
+    const dur = 4 + Math.random() * 3;
+    el.textContent = '🌹';
+    el.style.cssText = `left:${left}%;font-size:1.5rem;opacity:0.5;animation:fall-rose ${dur}s linear infinite;animation-delay:${delay}s;`;
+    bg.appendChild(el);
+  }
+  const sparkContainer = document.getElementById('sparkles');
+  for (let i = 0; i < 20; i++) {
+    const el = document.createElement('div');
+    el.className = 'sparkle';
+    el.style.left = Math.random() * 100 + '%';
+    el.style.top = Math.random() * 100 + '%';
+    el.style.animationDelay = Math.random() * 3 + 's';
+    sparkContainer.appendChild(el);
+  }
+
+  let opened = false;
+  const audio = document.getElementById('audio');
+  const musicBtn = document.getElementById('music-btn');
+
+  function openLetter() {
+    if (opened) return;
+    opened = true;
+    const envelope = document.getElementById('envelope');
+    const letter = document.getElementById('letter');
+    envelope.style.transform = 'scale(0)';
+    envelope.style.opacity = '0';
+    envelope.style.pointerEvents = 'none';
+    audio.volume = 0.85;
+    audio.play().catch(() => {});
+    musicBtn.textContent = '⏸';
+    setTimeout(() => {
+      envelope.style.display = 'none';
+      letter.style.display = 'block';
+      letter.getBoundingClientRect();
+      letter.classList.add('visible');
+    }, 400);
+  }
+
+  function toggleMusic() {
+    if (!opened) { openLetter(); return; }
+    if (audio.paused) {
+      audio.play().catch(() => {});
+      musicBtn.textContent = '⏸';
+    } else {
+      audio.pause();
+      musicBtn.textContent = '🔊';
+    }
+  }
+</script>
+</body>
+</html>
